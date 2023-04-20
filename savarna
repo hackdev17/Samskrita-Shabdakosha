@@ -1,0 +1,14 @@
+#!/bin/sh
+savarnanai=(\
+	"\u0905" "\u0907" "\u0909" \
+)
+dheergani=(\
+	"\u0906" "\u0908" "\u090A" \
+)
+for i in 0 1 2
+	do
+		printf "${savarnanai[$i]} + ${savarnanai[$i]} = ${dheergani[$i]}\n"
+		printf "${savarnanai[$i]} + ${dheergani[$i]} = ${dheergani[$i]}\n"
+		printf "${dheergani[$i]} + ${savarnanai[$i]} = ${dheergani[$i]}\n"
+		printf "${dheergani[$i]} + ${dheergani[$i]} = ${dheergani[$i]}\n"
+	done

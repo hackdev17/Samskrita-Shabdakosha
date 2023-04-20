@@ -1,0 +1,163 @@
+#!/bin/sh
+
+swarani=(\
+"\u0904" "\u0905" "\u0906" "\u0907" "\u0908" "\u0909" "\u090A" \
+"\u090B" "\u090C" "\u090D" "\u090E" "\u090F" "\u0910" "\u0911" \
+"\u0912" "\u0913" "\u0914" "\u0961" "\u0961" "\u0972" "\u0973" \
+"\u0974" "\u0975" "\u0976" "\u0977" \
+)
+
+vyanjanani=(\
+"\u0915" "\u0916" "\u0917" "\u0918" "\u0919" "\u091A" "\u091B" \
+"\u091C" "\u091D" "\u091E" "\u091F" "\u0920" "\u0921" "\u0922" \
+"\u0923" "\u0924" "\u0925" "\u0926" "\u0927" "\u0928" "\u0929" \
+"\u092A" "\u092B" "\u092C" "\u092D" "\u092E" "\u092F" "\u0930" \
+"\u0931" "\u0932" "\u0933" "\u0934" "\u0935" "\u0936" "\u0937" \
+"\u0938" "\u0939" "\u0958" "\u0959" "\u095A" "\u095B" "\u095C" \
+"\u095D" "\u095E" "\u095F" "\u0978" "\u0979" "\u097A" \
+)
+
+gunitani=(\
+"\u093E" "\u093F" "\u0940" "\u0941" "\u0942" "\u0943" "\u0944" \
+"\u0945" "\u0946" "\u0947" "\u0948" "\u0949" "\u094A" "\u094B" \
+"\u094C" "\u094E" "\u094F" "\u0955" "\u0956" "\u0957" "\u0956" \
+"\u0957" \
+)
+
+chinha=(\
+"\u0900" "\u0901" "\u0902" "\u0903" "\u0310" "\u093C" "\u093D" \
+"\u094D" "\u0950" "\u1F549" "\u0955" \
+)
+
+lekhana_chinha=(\
+"\u0964" "\u0965" "\u0970" "\u0971" "\u097D" \
+)
+
+refer(){
+    case $utf_break in
+        1)
+            printf '%s\t%s\t %s\n' "$index" "$i" "$(printf "\u00a0$i")"
+            index=$(( $index+1 ))
+        ;;
+        *)
+            printf '%s\t%s\t%s\n' "$index" "$i" "$(printf "$i")"
+            index=$(( $index+1 ))
+    esac
+}
+
+utf_refer(){
+    index=0
+    utf_break=0
+
+    printf '%s\n' "स्वराक्षराणि"
+    for i in ${swarani[@]} ; do refer ; done
+
+    printf '\n\n%s\n' "व्यंजनानि"
+    for i in ${vyanjanani[@]} ; do refer ; done
+
+    utf_break=1
+
+    printf '\n\n%s\n' "गुणिताक्षराणि"
+    for i in ${gunitani[@]}  ; do refer ; done
+
+    printf '\n\n%s\n' "चिह्ना"
+    for i in ${chinha[@]} ; do refer ; done
+
+    printf '\n\n%s\n' "लेखन चिह्ना"
+    for i in ${lekhana_chinha[@]} ; do refer ; done
+}
+
+get_utf_char(){
+    case $utf_break in
+        1)
+            printf "\u00a0$i "
+        ;;
+        0)
+            printf "$i "
+    esac
+}
+
+aksharani(){
+    utf_break=0
+
+    printf '%s\n' "स्वराक्षराणि"
+    for i in ${swarani[@]} ; do  get_utf_char ; done
+
+    printf '\n\n%s\n' "व्यंजनानि"
+    for i in ${vyanjanani[@]} ; do get_utf_char ; done
+
+    utf_break=1
+
+    printf '\n\n%s\n' "गुणिताक्षराणि"
+    for i in ${gunitani[@]}  ; do  get_utf_char ; done
+
+    printf '\n\n%s\n' "चिह्ना"
+    for i in ${chinha[@]} ; do get_utf_char ; done
+
+    printf '\n\n%s\n' "लेखन चिह्ना"
+    for i in ${lekhana_chinha[@]} ; do get_utf_char ; done
+    
+    printf "\n"
+}
+
+sanyuktani(){
+    for i in ${vyanjanani[@]} ; do printf "\u094D$i " ; done
+    printf "\n"
+}
+
+gunitani(){
+    for akshara in ${vyanjanani[@]}
+        do
+            for swara in ${gunitani[@]}
+                do
+                    printf "$akshara + $swara = ${akshara}${swara}\n"
+                done
+        done
+}
+
+no_error(){
+    printf '\n%s !\n' "Feature is not implemented yet"
+}
+
+invalid(){
+    printf '\n%s !\n' "Invalid Option"
+}
+
+hhelp(){
+echo "\
+Usage: kosha [OPTIONS] [FILE]
+    --show-fonts
+    --convert
+    --sanyuktani
+    --gunita
+    --savarna
+    --refer
+    --help"
+}
+
+for argv in $@
+    do
+        case $argv in
+            --show-fonts)
+                aksharani
+            ;;
+            --gunita)
+                gunitani
+            ;;
+            --sanyuktani)
+                sanyuktani
+            ;;
+            --savarna)
+                sh savarna
+            ;;
+            --convert)
+                no_error
+            ;;
+            --refer)
+                utf_refer
+            ;;
+            --help)
+                hhelp
+            ;;
+        esac
+    done
